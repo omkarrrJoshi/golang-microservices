@@ -1,20 +1,27 @@
 package model
 
 import (
-	"errors"
 	"fmt"
+	"net/http"
+
+	"github.com/omkarrrJoshi/golang-microservices/mvc/utils"
 )
 
 var (
 	users = map[int64]*User{
-		123: &User{Id: 1, FirstName: "omkar", LastName: "joshi", Email: "o.j@gmail.com"},
+		123: {Id: 1, FirstName: "omkar", LastName: "joshi", Email: "o.j@gmail.com"},
 	}
 )
 
-func GetUser(userId int64) (*User, error) {
+func GetUser(userId int64) (*User, *utils.ApplicationError) {
 	user, ok := users[userId]
 	if ok {
 		return user, nil
 	}
-	return nil, errors.New(fmt.Sprintf("user with userId %v not found", userId))
+	err := &utils.ApplicationError{
+		Msg:        fmt.Sprintf("user with userId %v not found", userId),
+		StatusCode: http.StatusNotFound,
+		Code:       "not_found",
+	}
+	return nil, err
 }
